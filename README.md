@@ -8,7 +8,7 @@ Hyperparameter optimization is highly computationally demanding for deep learnin
 3. Present a solution architecture integrating W&B with EKS and TorchElastic
 
 <div align="center">
-<img src="./Achitecture.png" width="90%">
+<img src="./Architecture.png" width="90%">
 <br/>
 Fig. 1 - Sample EKS infrastructure for hyperparameter grid search with deep learning models
 </div>
