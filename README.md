@@ -10,7 +10,7 @@ Hyperparameter optimization is highly computationally demanding for deep learnin
 <div align="center">
 <img src="./Achitecture.png" width="90%">
 <br/>
-Fig. 1 - Sample EKS infrastructure for OpenFold inference workload
+Fig. 1 - Sample EKS infrastructure for hyperparameter grid search with deep learning models
 </div>
 <br/>
 
