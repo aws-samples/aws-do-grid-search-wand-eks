@@ -1,0 +1,17 @@
+method: bayes
+metric:
+  goal: maximize
+  name: test_accuracy
+parameters:
+  learning_rate:
+    distribution: uniform
+    max: 0.001
+    min: 0
+  weight_decay:
+    distribution: uniform
+    max: 0.01
+    min: 0
+  optimizer:
+    values:
+    - 'AdamW'
+  

@@ -1,0 +1,56 @@
+apiVersion: elastic.pytorch.org/v1alpha1
+kind: ElasticJob
+metadata:
+  name: wandb-finbert-baseline
+  #namespace: elastic-job
+spec:
+  # Use "etcd-service:2379" if you already apply etcd.yaml
+  rdzvEndpoint: etcd-service:2379
+  minReplicas: 1
+  maxReplicas: 128
+  replicaSpecs:
+    Worker:
+      replicas: 1
+      restartPolicy: ExitCode
+      template:
+        apiVersion: v1
+        kind: Pod
+        spec:
+          nodeSelector:
+            node.kubernetes.io/instance-type: p3.8xlarge
+          containers:
+          - name: elasticjob-worker
+            image: <registry>/torchelastic-huggingface
+            imagePullPolicy: Always
+            env:
+            - name: NCCL_DEBUG
+              value: INFO
+              #  - name: NCCL_SOCKET_IFNAME
+              #    value: lo
+              #  - name: FI_PROVIDER
+              #    value: sockets
+            args:
+            - "--nproc_per_node=2"
+            - "/workspace/examples/huggingface/main.py"
+            - "--data=/shared-efs/wandb-finbert/"
+            - "--epochs=1"
+            - "--batch-size=16"
+            - "--workers=6"
+            - "--wandb_project=aws_eks_demo"
+            - "--sweep_id=3uks8gfk"
+            - "--checkpoint-file=/shared-efs/wandb-finbert/job-z74e8ix8/run-baseline/checkpoint.tar"
+            resources:
+              limits:
+                nvidia.com/gpu: 2
+            volumeMounts:
+            - name: efs-pvc
+              mountPath: /shared-efs
+            - name: dshm
+              mountPath: /dev/shm
+          volumes:
+          - name: efs-pvc
+            persistentVolumeClaim:
+              claimName: efs-claim
+          - name: dshm
+            emptyDir:
+              medium: Memory
