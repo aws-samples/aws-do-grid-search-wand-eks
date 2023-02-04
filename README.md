@@ -32,6 +32,7 @@ The process to submit a pre-processing job is very similar to above, with a few 
 
 # 3. Training Setup
 The [main.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/train/examples/huggingface/main.py) code, the run() function stores the end to end pipeline for:
+
 a. Initializing wandb on node 0 for logging results
 b. Loading the pre-trained model and setting up the optimizer
 c. Initializing custom training and validation data loaders
