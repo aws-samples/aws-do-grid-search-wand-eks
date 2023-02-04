@@ -14,7 +14,7 @@ Fig. 1 - Sample EKS infrastructure for hyperparameter grid search with deep lear
 </div>
 <br/>
 
-# 2. Set up 
+# 2. Cluster and Data Set up 
 You can use this [repo](https://github.com/aws-samples/aws-do-eks) to create the cluster. [aws-do-eks](https://github.com/aws-samples/aws-do-eks) also includes steps to create and mount an Amazon Elastic File System (EFS_ volume on an EKS cluster [here](https://github.com/aws-samples/aws-do-eks/tree/main/Container-Root/eks/deployment/csi/efs). Also update docker.properties with your ECR registry path. We set up an EKS cluster with 3 p3.8xlarge instances with 4 Tesla V100 GPUs each. 
 
 To try W&B for free, sign up at [Weights & Biases](https://wandb.ai/site), or visit the [W&B AWS Marketplace](https://aws.amazon.com/marketplace/pp/prodview-guj5ftmaeszay) listing. Please follow instructions [here](https://docs.wandb.ai/quickstart) to generate a W&B API key. For compatibility with W&B, it is standard practice to add WANDB_API_KEY as an environment variable and add wandb.login() at the very beginning of the code.
@@ -30,7 +30,28 @@ kubectl apply -f efs-data-prep-pod.yaml
 
 The process to submit a pre-processing job is very similar to above, with a few exceptions. Instead of a data-prep.sh script, you likely need to run a python job to pre-process the data. The preprocess folder has the scripts to run a pre-processing job. The [pre-process_data.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/preprocess/pre-process_data.py) script accomplishes two tasks: it takes in the raw data in EFS and splits it into train and test files, and adds the data to the W&B project.
 
-# 3. 
+# 3. Training Setup
+The [main.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/train/examples/huggingface/main.py) code, the run() function stores the end to end pipeline for:
+●	Initializing wandb on node 0 for logging results
+●	Loading the pre-trained model and setting up the optimizer
+●	Initializing custom training and validation data loaders
+●	Loading and saving checkpoints at every epoch
+●	Looping through the epochs and calling the training and validation functions
+●	After training is done, running predictions on the specified test set
+
+The [train](https://github.com/aws-samples/aws-do-grid-search-wand-eks/tree/main/run-grid/train) folder contains the Dockerfile and the `build.sh` and `push.sh` scripts to create the Docker image with the training code.
+
+Before training, we need to deploy a TorchElastic Controller for Kubernetes, which manages a Kubernetes custom resource ElasticJob to run TorchElastic workloads on Kubernetes. We also deploy a pod running the etcd server by running the script [deploy.sh](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/deploy.sh). It is recommended to delete and restart the etcd server when restarting a fresh training job.
+
+# 4. Weights & Biases Sweep Config
+After setting up the cluster and the container, we set up multiple runs in parallel with slightly different parameters in order to improve our model performance. [W&B Sweeps](https://docs.wandb.ai/guides/sweeps) will automate this kind of exploration. We set up a configuration file where we define the search strategy, the metric to monitor and the parameters to explore. An example sweep config file is shown [here](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/sweep_config.yaml). For more details on how to configure your sweeps follow the [W&B Sweeps walkthrough](https://docs.wandb.ai/guides/sweeps/quickstart#2-sweep-config).
+
+# 5. Run grid search
+Figure 2 shows how a grid search job controller shown in [run-grid.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/run-grid.py) code automates grid search with a W&B sweep config. This python job controller will take a [training template yaml](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/train.yaml) and generate one training yaml for each run in the hyper-parameter grid search.
+
+
+
+
 
 
 
