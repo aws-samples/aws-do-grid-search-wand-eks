@@ -32,12 +32,12 @@ The process to submit a pre-processing job is very similar to above, with a few 
 
 # 3. Training Setup
 The [main.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/train/examples/huggingface/main.py) code, the run() function stores the end to end pipeline for:
-●	Initializing wandb on node 0 for logging results
-●	Loading the pre-trained model and setting up the optimizer
-●	Initializing custom training and validation data loaders
-●	Loading and saving checkpoints at every epoch
-●	Looping through the epochs and calling the training and validation functions
-●	After training is done, running predictions on the specified test set
+a. Initializing wandb on node 0 for logging results
+b. Loading the pre-trained model and setting up the optimizer
+c. Initializing custom training and validation data loaders
+d. Loading and saving checkpoints at every epoch
+e. Looping through the epochs and calling the training and validation functions
+f. After training is done, running predictions on the specified test set
 
 The [train](https://github.com/aws-samples/aws-do-grid-search-wand-eks/tree/main/run-grid/train) folder contains the Dockerfile and the `build.sh` and `push.sh` scripts to create the Docker image with the training code.
 
@@ -49,6 +49,12 @@ After setting up the cluster and the container, we set up multiple runs in paral
 # 5. Run grid search
 Figure 2 shows how a grid search job controller shown in [run-grid.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/run-grid.py) code automates grid search with a W&B sweep config. This python job controller will take a [training template yaml](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/train.yaml) and generate one training yaml for each run in the hyper-parameter grid search.
 
+<div align="center">
+<img src="./Grid-seacrh-process-flow.png" width="90%">
+<br/>
+Fig. 2 - Process flow to submit multiple training jobs on the EKS cluster based on W&B sweep config
+</div>
+<br/>
 
 
 
