@@ -1,6 +1,6 @@
 ## Accelerate Deep Learning Hyperparameter Grid Search with Amazon EKS and Weights & Biases
 
-# 1. Overview
+# 1. Overviews
 Hyperparameter optimization is highly computationally demanding for deep learning models. The architectural complexity increases when a single model training run requires multiple GPUs. In this repo, we will show how to use the Weights & Biases (W&B) Sweeps function and Amazon’s Elastic Kubernetes Service (EKS) to address these challenges. Amazon EKS is a highly available managed Kubernetes service that automatically scales instances based on load, and is well suited for running distributed training workloads. We will showcase an example for tuning a bert-base-cased model for classifying positive or negative sentiment for stock market data headlines. In the following sections, we will present the key components of the architecture shown in Fig. 1. More specifically, we will show:
 
 1. How to set up an EKS cluster with a scalable file system
