@@ -33,12 +33,12 @@ The process to submit a pre-processing job is very similar to above, with a few 
 # 3. Training Setup
 The [main.py](https://github.com/aws-samples/aws-do-grid-search-wand-eks/blob/main/run-grid/train/examples/huggingface/main.py) code, the run() function stores the end to end pipeline for:
 
-a. Initializing wandb on node 0 for logging results
-b. Loading the pre-trained model and setting up the optimizer
-c. Initializing custom training and validation data loaders
-d. Loading and saving checkpoints at every epoch
-e. Looping through the epochs and calling the training and validation functions
-f. After training is done, running predictions on the specified test set
+1. Initializing wandb on node 0 for logging results
+2. Loading the pre-trained model and setting up the optimizer
+3. Initializing custom training and validation data loaders
+4. Loading and saving checkpoints at every epoch
+5. Looping through the epochs and calling the training and validation functions
+6. After training is done, running predictions on the specified test set
 
 The [train](https://github.com/aws-samples/aws-do-grid-search-wand-eks/tree/main/run-grid/train) folder contains the Dockerfile and the `build.sh` and `push.sh` scripts to create the Docker image with the training code.
 
@@ -57,23 +57,11 @@ Fig. 2 - Process flow to submit multiple training jobs on the EKS cluster based 
 </div>
 <br/>
 
-
-
-
-
-
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
+Once the grid search job controller is running, you will see all 6 Kubernetes jobs with `kubectl get pod -A`. There will be one job per training run and each job will have one worker per node. To see the logs for each pod, you can tail logs using `kubectl logs -f <pod-name>`. `kubetail` will display the logs of all pods for each training job simultaneously. At the start of the grid controller, you get a link to the W&B platform where you can view the progress of all jobs.
 
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information. Prior to any production deployment, customers should work with their local security teams to evaluate any additional controls
-
-
 
 ## License
 
